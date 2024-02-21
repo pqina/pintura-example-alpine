@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pintura Alpine example project</title>
+
+        <link rel="stylesheet" href="./node_modules/@pqina/pintura/pintura.css" />
+        <link rel="stylesheet" href="./styles.css" />
+    </head>
+    <body>
+        <h1>Pintura Image Editor</h1>
+
+        <script src="./alpine-pintura/index.js" type="module" defer></script>
+
+        <script src="./alpine/alpine.min.js" defer></script>
+
+        <div x-data="{ src: null, dest: null }">
+            <!-- Load images from file input -->
+            <input
+                x-show="!src"
+                type="file"
+                @change="(e) => {
+                    const [file] = e.target.files;
+                    if (!file || !/image/.test(file.type)) return;
+                    src = file;
+                }"
+            />
+
+            <!-- Load a local or remote image -->
+            <button x-show="!src" @click="src = 'image.jpeg'">Load local image</button>
+
+            <!-- Displays resulting image if defined -->
+            <img x-show="dest && !src" :src="dest" alt="" />
+
+            <!-- Pintura node -->
+            <div
+                style="width: 90vw; height: 600px"
+                x-show="src"
+                x-pintura="{
+                    src, 
+                    imageCropAspectRatio: 1,
+                    utils: ['crop', 'annotate', 'sticker', 'filter'],
+                    stickers: [
+                        ['Emoji', ['⭐️', '😊', '👍', '👎', '👏', '🌤', '🌥']],
+                        [
+                            'Markers',
+                            [
+                                {
+                                    src: 'sticker-one.svg',
+                                    width: '5%',
+                                    alt: 'One',
+                                },
+                                {
+                                    src: 'sticker-two.svg',
+                                    width: '5%',
+                                    alt: 'Two',
+                                },
+                                {
+                                    src: 'sticker-three.svg',
+                                    width: '5%',
+                                    alt: 'Three',
+                                },
+                            ],
+                        ],
+                    ]
+                }"
+                @pintura:init="(e) => {
+                    // Clear previous result (if any)
+                    dest = null;
+                }"
+                @pintura:load="(e) => {
+                    // Just to show what the load event contains
+                    console.log('load', e);
+                }"
+                @pintura:process="(e) => {
+                    // Called when an image is processed
+                    console.log('process', e); 
+
+                    // Clear source so editor hides
+                    src = null;
+                    
+                    // Show resulting image 
+                    dest = URL.createObjectURL(e.detail.dest);
+                }"
+            ></div>
+        </div>
+    </body>
+</html>

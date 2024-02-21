@@ -1,0 +1,15 @@
+npm/**/*
+private-npm/**/*
+dist/**/*
+_public/pintura/**/*
+_public/pintura-input/**/*
+_public/locale/**/*
+_public/subpath/**/*
+_public/vendor/**/*
+_public/image-input/**/*
+_public/tools/**/*
+_public/filepond-plugin-image-editor/**/*
+
+preset/react-native/assets/*
+local_modules/**/*
+_/**/*
